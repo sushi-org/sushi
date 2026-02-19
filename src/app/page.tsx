@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -108,21 +109,34 @@ export default function Home() {
       />
 
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6 sm:px-8">
-        <Link className="text-2xl font-semibold tracking-tight text-foreground" href="/">
-          Clink
+        <Link
+          className="inline-flex items-center gap-3.5 text-4xl font-semibold tracking-tight text-foreground"
+          href="/"
+        >
+          <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl border border-[#bdd5e6] bg-[#eef5fb] shadow-sm">
+            <Image
+              src="/logo2.png"
+              alt="Clink logo"
+              width={46}
+              height={46}
+              className="h-11 w-11 object-contain mix-blend-multiply"
+              priority
+            />
+          </span>
+          <span>Clink</span>
         </Link>
         <nav className="hidden items-center gap-7 text-sm font-medium text-muted sm:flex">
           <a className="hover:text-foreground" href="#features">
             Features
           </a>
-          <a className="hover:text-foreground" href="#use-cases">
-            Use cases
+          <a className="hover:text-foreground" href="#">
+            Pricing
           </a>
-          <a className="hover:text-foreground" href="#how-it-works">
-            How it works
+          <a className="hover:text-foreground" href="#">
+            Blogs
           </a>
-          <a className="hover:text-foreground" href="#contact">
-            Contact
+          <a className="hover:text-foreground" href="#">
+            Sign In
           </a>
         </nav>
       </header>
@@ -247,11 +261,8 @@ export default function Home() {
           />
           <div className="relative grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-secondary-ink">
-                Customer Journey
-              </p>
               <h2 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-                Built for every stage of the customer journey
+                Streamline front office work, so you can focus on your business
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-7 text-muted sm:text-base">
