@@ -12,8 +12,14 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  type TooltipProps,
 } from "recharts";
+
+// Custom tooltip props (Recharts injects these at runtime)
+interface ChartTooltipProps {
+  active?: boolean;
+  payload?: Array<{ dataKey?: string; value?: number }>;
+  label?: string | number;
+}
 
 // ── Types ────────────────────────────────────────────────────────────────
 
@@ -145,13 +151,13 @@ function SplitBar({
 
 // ── Chart tooltips ───────────────────────────────────────────────────────
 
-function BookingTooltip({ active, payload, label }: TooltipProps<number, string>) {
+function BookingTooltip({ active, payload, label }: ChartTooltipProps) {
   if (!active || !payload?.length) return null;
   const ai = payload.find((p) => p.dataKey === "by_ai")?.value ?? 0;
   const human = payload.find((p) => p.dataKey === "by_human")?.value ?? 0;
   return (
     <div className="rounded-lg border border-border bg-white px-3 py-2 text-xs shadow-md">
-      <p className="mb-1 font-semibold text-foreground">{fmtShortDate(label ?? "")}</p>
+      <p className="mb-1 font-semibold text-foreground">{fmtShortDate(String(label ?? ""))}</p>
       <p className="flex items-center gap-1.5">
         <span className="inline-block h-2 w-2 rounded-full bg-primary" />
         {ai} by AI
@@ -169,13 +175,13 @@ function RevenueTooltip({
   payload,
   label,
   currency,
-}: TooltipProps<number, string> & { currency: string }) {
+}: ChartTooltipProps & { currency: string }) {
   if (!active || !payload?.length) return null;
   const ai = payload.find((p) => p.dataKey === "from_ai")?.value ?? 0;
   const human = payload.find((p) => p.dataKey === "from_human")?.value ?? 0;
   return (
     <div className="rounded-lg border border-border bg-white px-3 py-2 text-xs shadow-md">
-      <p className="mb-1 font-semibold text-foreground">{fmtShortDate(label ?? "")}</p>
+      <p className="mb-1 font-semibold text-foreground">{fmtShortDate(String(label ?? ""))}</p>
       <p className="flex items-center gap-1.5">
         <span className="inline-block h-2 w-2 rounded-full bg-primary" />
         {fmtCurrency(ai, currency)} from AI
@@ -577,7 +583,9 @@ export default function HomePage() {
                     />
                     <Tooltip
                       content={
-                        <RevenueTooltip currency={analytics.revenue.currency} />
+                        <RevenueTooltip
+                          currency={analytics.revenue.currency}
+                        />
                       }
                     />
                     <Area
