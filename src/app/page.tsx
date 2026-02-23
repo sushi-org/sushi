@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const CAROUSEL_EXAMPLES = [
@@ -41,7 +43,15 @@ const CAROUSEL_EXAMPLES = [
 ];
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [activeCarouselIndex, setActiveCarouselIndex] = useState(0);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.replace(session?.companyId ? "/dashboard" : "/onboarding");
+    }
+  }, [status, session?.companyId, router]);
 
   useEffect(() => {
     const timerId = setInterval(() => {
@@ -53,24 +63,42 @@ export default function Home() {
   const activeExample = CAROUSEL_EXAMPLES[activeCarouselIndex];
   const activeInquiryType = activeExample.lane.replace(" Assistant", "");
 
-  const journeyStages = [
+  const BOOKING_FEATURES = [
     {
-      title: "For Front Desk",
-      description:
-        "Handle repetitive questions automatically and escalate complex conversations to your team only when needed.",
-      icon: "chat",
-    },
-    {
-      title: "For Bookings",
-      description:
-        "Guide customers to the right service, suggest best-fit slots, and confirm bookings directly in chat.",
+      id: "booking",
+      title: "Book appointments directly in chat",
+      description: (
+        <>
+          Guide customers to the right service, suggest available slots, and confirm bookings without leaving WhatsApp or your chat channel.{" "}
+          <span className="font-semibold text-[#1f6e96]">No external links, no handoffs—just instant conversions.</span>
+        </>
+      ),
       icon: "calendar",
+      visualOrder: "right",
     },
     {
-      title: "For Growth",
-      description:
-        "Follow up on unbooked leads, nudge repeat visits at the right time, and improve retention over time.",
-      icon: "chart",
+      id: "ai",
+      title: "24/7 AI that knows your business",
+      description: (
+        <>
+          Clink automatically learns from your company&apos;s FAQs, services, and policies—so{" "}
+          <span className="font-semibold text-[#1f6e96]">customers get immediate responses and never drop off waiting.</span>
+        </>
+      ),
+      icon: "brain",
+      visualOrder: "left",
+    },
+    {
+      id: "followups",
+      title: "Recover leads and nudge repeat visits",
+      description: (
+        <>
+          Automatically follow up on unbooked inquiries, send repeat-visit reminders at the right time, and reactivate inactive customers.{" "}
+          <span className="font-semibold text-[#1f6e96]">Turn missed chats into bookings.</span>
+        </>
+      ),
+      icon: "megaphone",
+      visualOrder: "right",
     },
   ];
 
@@ -135,9 +163,9 @@ export default function Home() {
           <a className="hover:text-foreground" href="#">
             Blogs
           </a>
-          <a className="hover:text-foreground" href="#">
+          <button className="hover:text-foreground" onClick={() => signIn("google", { callbackUrl: "/dashboard" })}>
             Sign In
-          </a>
+          </button>
         </nav>
       </header>
 
@@ -157,12 +185,12 @@ export default function Home() {
                 appointment-based businesses.
               </p>
               <div className="mt-7 flex flex-wrap items-center gap-3">
-                <a
+                <button
                   className="inline-flex h-11 items-center justify-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-ink shadow-[0_12px_24px_-14px_rgba(47,142,169,0.75)] hover:brightness-95"
-                  href="#contact"
+                  onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
                 >
                   Get Started
-                </a>
+                </button>
                 <a
                   className="inline-flex h-11 items-center justify-center rounded-full border border-border bg-white px-5 text-sm font-semibold text-foreground hover:bg-surface"
                   href="#contact"
@@ -172,7 +200,7 @@ export default function Home() {
               </div>
             </div>
 
-            <article className="rounded-3xl border border-[#c9dae7] bg-white/95 p-5 shadow-[0_20px_50px_-28px_rgba(18,62,91,0.55)]">
+            <article className="chat-animate-in rounded-3xl border border-[#c9dae7] bg-white/95 p-5 shadow-[0_20px_50px_-28px_rgba(18,62,91,0.55)]">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-base font-semibold text-foreground sm:text-lg">
                   Automate customer{" "}
@@ -181,13 +209,19 @@ export default function Home() {
                 </h2>
               </div>
 
-              <div className="mt-4 space-y-3">
+              <div key={activeCarouselIndex} className="mt-4 space-y-3">
                 {activeExample.asks.map((ask, index) => (
                   <div key={ask} className="space-y-2">
-                    <div className="ml-auto w-fit max-w-[92%] rounded-2xl rounded-br-md border border-border bg-[#f8fbfe] px-3 py-2 text-sm text-foreground shadow-sm">
+                    <div
+                      className="chat-msg-user ml-auto w-fit max-w-[92%] rounded-2xl rounded-br-md border border-border bg-[#f8fbfe] px-3 py-2 text-sm text-foreground shadow-sm"
+                      style={{ animationDelay: `${index * 0.7}s` }}
+                    >
                       {ask}
                     </div>
-                    <div className="relative mt-2 max-w-[92%] pt-3">
+                    <div
+                      className="chat-msg-clink relative mt-2 max-w-[92%] pt-3"
+                      style={{ animationDelay: `${index * 0.7 + 0.35}s` }}
+                    >
                       <span
                         className={`absolute -left-2 top-0 inline-flex items-center gap-1 rounded-full border bg-white px-1.5 py-0.5 text-[10px] font-semibold shadow-sm ${activeExample.theme.aiBadge}`}
                       >
@@ -254,49 +288,134 @@ export default function Home() {
           </div>
         </section>
 
-        <section className={sectionClass} id="use-cases">
+        <section className={sectionClass} id="features">
           <div
             aria-hidden
             className="absolute -left-20 -top-24 h-56 w-56 rounded-full bg-secondary/30 blur-3xl"
           />
-          <div className="relative grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
-            <div>
-              <h2 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-                Streamline front office work, so you can focus on your business
-              </h2>
-            </div>
-            <p className="max-w-xl text-sm leading-7 text-muted sm:text-base">
-              From first inquiry to repeat visit, Clink helps teams move faster, reduce manual
-              work, and increase conversion at every step.
-            </p>
-          </div>
+          <span className="relative inline-flex items-center rounded-full border border-[#b9d9ee] bg-[#eef6fb] px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#236a93]">
+            Conversion Features
+          </span>
+          <h2 className="relative mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            Increase Customer Bookings
+          </h2>
+          <p className="relative mt-2 max-w-2xl text-sm leading-7 text-muted sm:text-base">
+            Three powerful ways to convert more chats into confirmed appointments.
+          </p>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            {journeyStages.map((item) => (
+          <div className="relative mt-8 space-y-6 sm:mt-10 sm:space-y-7">
+            {BOOKING_FEATURES.map((feature, index) => (
               <article
-                key={item.title}
-                className="group rounded-2xl border border-border bg-[linear-gradient(145deg,#ffffff_0%,#f2f7fb_100%)] p-5 shadow-[0_14px_30px_-24px_rgba(22,60,88,0.5)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_35px_-24px_rgba(22,60,88,0.55)]"
+                key={feature.id}
+                className={`rounded-3xl border border-[#c9dae7] bg-[linear-gradient(145deg,#ffffff_0%,#f5f9fd_100%)] p-5 shadow-[0_18px_45px_-30px_rgba(18,62,91,0.4)] sm:p-7 lg:grid lg:grid-cols-2 lg:items-center lg:gap-12 ${
+                  feature.visualOrder === "left" ? "lg:[&>div:first-child]:order-2 lg:[&>div:last-child]:order-1" : ""
+                }`}
               >
-                <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#bcd4e3] bg-[#eaf3f9] text-[#2f6f93]">
-                  {item.icon === "chat" && (
-                    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current">
-                      <path d="M4 5h16v10H8l-4 4V5Z" strokeWidth="1.8" strokeLinejoin="round" />
-                    </svg>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-semibold uppercase tracking-[0.11em] text-[#6e8293]">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <div className="h-px flex-1 bg-[#d6e2eb]" />
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#bcd4e3] bg-[#eaf3f9] text-[#2f6f93] shadow-sm">
+                      {feature.icon === "calendar" && (
+                        <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current">
+                          <rect x="3.5" y="5.5" width="17" height="15" rx="2.5" strokeWidth="1.8" />
+                          <path d="M7 3.5v4M17 3.5v4M3.5 10.5h17" strokeWidth="1.8" strokeLinecap="round" />
+                        </svg>
+                      )}
+                      {feature.icon === "brain" && (
+                        <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current">
+                          <path d="M12 2.5 14.7 9.3l6.8 2.7-6.8 2.7-2.7 6.8-2.7-6.8-6.8-2.7 6.8-2.7L12 2.5Z" strokeWidth="1.8" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                      {feature.icon === "megaphone" && (
+                        <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current">
+                          <path d="M3 11l4-4h2l10 10v-6l4-4v12l-4-4h-2L3 11z" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                    </div>
+                    <h3 className="text-2xl font-semibold tracking-tight text-foreground sm:text-[2rem] sm:leading-[1.15]">
+                      {feature.title}
+                    </h3>
+                  </div>
+                  <p className="max-w-xl text-sm leading-8 text-muted sm:text-base">{feature.description}</p>
+                </div>
+
+                <div className="rounded-2xl border border-[#c9dae7] bg-white p-5 shadow-[0_16px_34px_-24px_rgba(18,62,91,0.35)]">
+                  {feature.id === "booking" && (
+                    <div className="space-y-3">
+                      <div className="space-y-2">
+                        <div className="ml-auto w-fit max-w-[92%] rounded-2xl rounded-br-md border border-border bg-[#f8fbfe] px-3 py-2 text-sm text-foreground shadow-sm">
+                          Any slot tonight?
+                        </div>
+                        <div className="relative mt-2 max-w-[92%] pt-3">
+                          <span className="absolute -left-2 top-0 inline-flex items-center gap-1 rounded-full border border-[#b9d9ee] bg-white px-1.5 py-0.5 text-[10px] font-semibold text-[#236a93] shadow-sm">
+                            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-2.5 w-2.5 fill-current">
+                              <path d="M12 2.5 14.7 9.3l6.8 2.7-6.8 2.7-2.7 6.8-2.7-6.8-6.8-2.7 6.8-2.7L12 2.5Z" />
+                            </svg>
+                            Clink
+                          </span>
+                          <div className="rounded-2xl rounded-bl-md border border-[#cfe0eb] bg-[#eef6fb] px-3 py-2 text-sm text-foreground shadow-sm">
+                            7:00 PM or 7:45 PM works. Which do you prefer?
+                          </div>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="ml-auto w-fit max-w-[92%] rounded-2xl rounded-br-md border border-border bg-[#f8fbfe] px-3 py-2 text-sm text-foreground shadow-sm">
+                          7 PM please
+                        </div>
+                        <div className="relative mt-2 max-w-[92%] pt-3">
+                          <span className="absolute -left-2 top-0 inline-flex items-center gap-1 rounded-full border border-[#b8e9d0] bg-white px-1.5 py-0.5 text-[10px] font-semibold text-[#1f7a55] shadow-sm">
+                            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-2.5 w-2.5 fill-current">
+                              <path d="M12 2.5 14.7 9.3l6.8 2.7-6.8 2.7-2.7 6.8-2.7-6.8-6.8-2.7 6.8-2.7L12 2.5Z" />
+                            </svg>
+                            Clink
+                          </span>
+                          <div className="rounded-2xl rounded-bl-md border border-[#a7efcf] bg-[#eafbf2] px-3 py-2 text-sm font-medium text-[#1f7a55] shadow-sm">
+                            Done. You&apos;re booked for 7:00 PM today.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   )}
-                  {item.icon === "calendar" && (
-                    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current">
-                      <rect x="3.5" y="5.5" width="17" height="15" rx="2.5" strokeWidth="1.8" />
-                      <path d="M7 3.5v4M17 3.5v4M3.5 10.5h17" strokeWidth="1.8" strokeLinecap="round" />
-                    </svg>
+                  {feature.id === "ai" && (
+                    <div className="space-y-2">
+                      <div className="ml-auto w-fit max-w-[92%] rounded-2xl rounded-br-md border border-border bg-[#f8fbfe] px-3 py-2 text-sm text-foreground shadow-sm">
+                        How much is facial cleaning?
+                      </div>
+                      <div className="relative mt-2 max-w-[92%] pt-3">
+                        <span className="absolute -left-2 top-0 inline-flex items-center gap-1 rounded-full border border-[#d8dcf8] bg-white px-1.5 py-0.5 text-[10px] font-semibold text-[#5b63b5] shadow-sm">
+                          <svg aria-hidden="true" viewBox="0 0 24 24" className="h-2.5 w-2.5 fill-current">
+                            <path d="M12 2.5 14.7 9.3l6.8 2.7-6.8 2.7-2.7 6.8-2.7-6.8-6.8-2.7 6.8-2.7L12 2.5Z" />
+                          </svg>
+                          Clink
+                        </span>
+                        <div className="rounded-2xl rounded-bl-md border border-[#dfe2f8] bg-[#f3f5ff] px-3 py-2 text-sm text-foreground shadow-sm">
+                          Facial cleaning starts from $88 per session. I can check availability if you&apos;d like to book.
+                        </div>
+                      </div>
+                    </div>
                   )}
-                  {item.icon === "chart" && (
-                    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current">
-                      <path d="M4 18h16M7 15v3M12 11v7M17 8v10" strokeWidth="1.8" strokeLinecap="round" />
-                    </svg>
+                  {feature.id === "followups" && (
+                    <div className="space-y-4">
+                      <p className="text-sm font-semibold text-foreground">Follow-up Campaigns</p>
+                      <div className="rounded-xl border border-[#cbe8da] bg-[#eef9f2] p-4">
+                        <p className="text-2xl font-bold text-[#1f7a55]">127</p>
+                        <p className="mt-0.5 text-xs text-muted">of 180 follow-ups sent this week</p>
+                        <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-[#cbe8da]">
+                          <div className="h-full w-[70%] rounded-full bg-[#1f7a55]" />
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <span className="rounded-lg border border-border bg-surface/60 px-2 py-1 text-xs text-muted">Unbooked leads</span>
+                        <span className="rounded-lg border border-border bg-surface/60 px-2 py-1 text-xs text-muted">Repeat reminders</span>
+                      </div>
+                    </div>
                   )}
                 </div>
-                <h3 className="mt-4 text-lg font-semibold text-foreground">{item.title}</h3>
-                <p className="mt-2 text-sm leading-7 text-muted">{item.description}</p>
               </article>
             ))}
           </div>
@@ -308,7 +427,7 @@ export default function Home() {
             className="absolute -left-12 -top-20 h-52 w-52 rounded-full bg-secondary/35 blur-3xl"
           />
           <h2 className="relative text-3xl font-semibold tracking-tight text-foreground">
-            Simple by Design
+            Get Started in Minutes
           </h2>
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
             {steps.map((item) => (
