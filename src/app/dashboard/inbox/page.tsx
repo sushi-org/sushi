@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
 import { toast } from "@/components/toast";
 import { useBranch } from "@/contexts/branch-context";
@@ -67,7 +67,7 @@ function neededHuman(conv: ConversationListItem): boolean {
   );
 }
 
-export default function InboxPage() {
+function InboxContent() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const { selectedBranchId, setSelectedBranchId, branches } = useBranch();
@@ -669,6 +669,28 @@ export default function InboxPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function InboxFallback() {
+  return (
+    <div className="flex h-full flex-col bg-background">
+      <div className="shrink-0 border-b border-border bg-white px-6 py-5 shadow-sm">
+        <div className="h-6 w-32 animate-pulse rounded bg-surface" />
+        <div className="mt-2 h-4 w-48 animate-pulse rounded bg-surface" />
+      </div>
+      <div className="flex flex-1 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-primary" />
+      </div>
+    </div>
+  );
+}
+
+export default function InboxPage() {
+  return (
+    <Suspense fallback={<InboxFallback />}>
+      <InboxContent />
+    </Suspense>
   );
 }
 
