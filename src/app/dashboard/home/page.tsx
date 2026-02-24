@@ -310,7 +310,7 @@ export default function HomePage() {
     (analytics.conversations.total > 0 || analytics.bookings.total > 0);
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       <h1 className="text-2xl font-semibold tracking-tight text-foreground">
         Home
       </h1>
@@ -339,7 +339,7 @@ export default function HomePage() {
           <>
             {/* ── Hero: AI Resolution Rate ─────────────────────────── */}
             <div className="mt-8 overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
-              <div className="flex flex-col items-center gap-8 p-8 sm:flex-row">
+              <div className="flex flex-col items-center gap-6 p-4 sm:flex-row sm:gap-8 sm:p-6 lg:p-8">
                 <RingProgress value={analytics.conversations.ai_resolution_rate} />
 
                 <div className="flex-1 text-center sm:text-left">

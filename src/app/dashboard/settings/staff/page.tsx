@@ -291,7 +291,7 @@ export default function StaffSettingsPage() {
   return (
     <div>
       {!panelOpen && (
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-muted">{staffList.length} staff member(s)</p>
           <button onClick={openNewStaff}
             className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-ink shadow-sm hover:brightness-95">
@@ -306,39 +306,67 @@ export default function StaffSettingsPage() {
           <p className="text-sm text-muted">No staff yet. Add your first staff member.</p>
         </div>
       ) : !panelOpen && (
-        <div className="mt-6 overflow-hidden rounded-xl border border-border bg-white">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-border bg-surface/50">
-              <tr>
-                <th className="px-4 py-3 font-medium text-muted">Name</th>
-                <th className="px-4 py-3 font-medium text-muted">Email</th>
-                <th className="px-4 py-3 font-medium text-muted">Phone</th>
-                <th className="px-4 py-3 font-medium text-muted">Status</th>
-                <th className="px-4 py-3 font-medium text-muted"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {staffList.map((s) => (
-                <tr key={s.id} className="cursor-pointer hover:bg-surface/30" onClick={() => openEditStaff(s)}>
-                  <td className="px-4 py-3 font-medium text-foreground">{s.name}</td>
-                  <td className="px-4 py-3 text-foreground">{s.email ?? "—"}</td>
-                  <td className="px-4 py-3 text-foreground">{s.phone ?? "—"}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${s.status === "active" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-700"}`}>
-                      {s.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-right">
+        <>
+          {/* Desktop: table */}
+          <div className="mt-6 hidden overflow-hidden rounded-xl border border-border bg-white md:block">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b border-border bg-surface/50">
+                <tr>
+                  <th className="px-4 py-3 font-medium text-muted">Name</th>
+                  <th className="px-4 py-3 font-medium text-muted">Email</th>
+                  <th className="px-4 py-3 font-medium text-muted">Phone</th>
+                  <th className="px-4 py-3 font-medium text-muted">Status</th>
+                  <th className="px-4 py-3 font-medium text-muted"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {staffList.map((s) => (
+                  <tr key={s.id} className="cursor-pointer hover:bg-surface/30" onClick={() => openEditStaff(s)}>
+                    <td className="px-4 py-3 font-medium text-foreground">{s.name}</td>
+                    <td className="px-4 py-3 text-foreground">{s.email ?? "—"}</td>
+                    <td className="px-4 py-3 text-foreground">{s.phone ?? "—"}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${s.status === "active" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-700"}`}>
+                        {s.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <button onClick={(e) => { e.stopPropagation(); openEditStaff(s); }}
+                        className="text-xs font-medium text-primary hover:underline">Edit</button>
+                      <button onClick={async (e) => { e.stopPropagation(); if (!companyId || !confirm("Delete this staff member?")) return; await api(`/companies/${companyId}/staff/${s.id}`, { method: "DELETE" }); await loadStaff(); }}
+                        className="ml-3 text-xs font-medium text-red-600 hover:underline">Delete</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {/* Mobile: cards */}
+          <div className="mt-6 space-y-3 md:hidden">
+            {staffList.map((s) => (
+              <div
+                key={s.id}
+                className="cursor-pointer rounded-xl border border-border bg-white p-4"
+                onClick={() => openEditStaff(s)}
+              >
+                <div className="font-medium text-foreground">{s.name}</div>
+                <div className="mt-0.5 text-sm text-muted">{s.email ?? "—"}</div>
+                <div className="mt-0.5 text-sm text-muted">{s.phone ?? "—"}</div>
+                <div className="mt-2 flex items-center justify-between">
+                  <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${s.status === "active" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-700"}`}>
+                    {s.status}
+                  </span>
+                  <div className="flex gap-2">
                     <button onClick={(e) => { e.stopPropagation(); openEditStaff(s); }}
                       className="text-xs font-medium text-primary hover:underline">Edit</button>
                     <button onClick={async (e) => { e.stopPropagation(); if (!companyId || !confirm("Delete this staff member?")) return; await api(`/companies/${companyId}/staff/${s.id}`, { method: "DELETE" }); await loadStaff(); }}
-                      className="ml-3 text-xs font-medium text-red-600 hover:underline">Delete</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                      className="text-xs font-medium text-red-600 hover:underline">Delete</button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
       {/* ── Add / Edit panel ── */}

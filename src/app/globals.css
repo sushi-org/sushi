@@ -56,3 +56,11 @@ select {
 .animate-slide-in-up {
   animation: slide-in-up 200ms ease-out;
 }
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

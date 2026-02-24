@@ -21,7 +21,7 @@ export default function SettingsLayout({
   const pathname = usePathname();
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       <h1 className="text-2xl font-semibold tracking-tight text-foreground">
         Settings
       </h1>
@@ -29,7 +29,8 @@ export default function SettingsLayout({
         Configure your company, services, and integrations.
       </p>
 
-      <nav className="mt-6 flex gap-1 border-b border-border">
+      <nav className="mt-6 flex overflow-x-auto border-b border-border pb-2 scrollbar-hide [-webkit-overflow-scrolling:touch]">
+        <div className="flex min-w-max gap-1">
         {SETTINGS_NAV.map((item) => {
           const active =
             pathname === item.href || pathname.startsWith(item.href + "/");
@@ -37,7 +38,7 @@ export default function SettingsLayout({
             <Link
               key={item.href}
               href={item.href}
-              className={`border-b-2 px-4 py-2.5 text-sm font-medium transition ${
+              className={`shrink-0 border-b-2 px-4 py-2.5 text-sm font-medium transition ${
                 active
                   ? "border-primary text-primary"
                   : "border-transparent text-muted hover:border-border hover:text-foreground"
@@ -47,6 +48,7 @@ export default function SettingsLayout({
             </Link>
           );
         })}
+        </div>
       </nav>
 
       <div className="mt-6">{children}</div>

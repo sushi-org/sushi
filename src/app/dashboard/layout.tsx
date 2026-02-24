@@ -1,6 +1,7 @@
-import Sidebar from "@/components/sidebar";
+import DashboardShell from "@/components/dashboard-shell";
 import { ToastContainer } from "@/components/toast";
 import { BranchProvider } from "@/contexts/branch-context";
+import { SidebarProvider } from "@/contexts/sidebar-context";
 
 export default function DashboardLayout({
   children,
@@ -9,11 +10,12 @@ export default function DashboardLayout({
 }) {
   return (
     <BranchProvider>
-      <div className="flex h-screen bg-background">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto">{children}</main>
-      </div>
-      <ToastContainer />
+      <SidebarProvider>
+        <div className="flex h-screen bg-background">
+          <DashboardShell>{children}</DashboardShell>
+        </div>
+        <ToastContainer />
+      </SidebarProvider>
     </BranchProvider>
   );
 }

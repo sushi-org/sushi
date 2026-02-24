@@ -63,8 +63,8 @@ export default function BookingsPage() {
       : bookings.filter((b) => b.status === statusFilter);
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 lg:p-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             Bookings
@@ -75,7 +75,7 @@ export default function BookingsPage() {
         </div>
       </div>
 
-      <div className="mt-6 flex gap-2">
+      <div className="mt-6 flex flex-wrap gap-2">
         {["all", "confirmed", "completed", "cancelled", "no_show"].map(
           (s) => (
             <button
@@ -124,50 +124,82 @@ export default function BookingsPage() {
           </p>
         </div>
       ) : (
-        <div className="mt-6 overflow-hidden rounded-xl border border-border bg-white">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-border bg-surface/50">
-              <tr>
-                <th className="px-4 py-3 font-medium text-muted">Date</th>
-                <th className="px-4 py-3 font-medium text-muted">Time</th>
-                <th className="px-4 py-3 font-medium text-muted">Staff</th>
-                <th className="px-4 py-3 font-medium text-muted">Service</th>
-                <th className="px-4 py-3 font-medium text-muted">Customer</th>
-                <th className="px-4 py-3 font-medium text-muted">Phone</th>
-                <th className="px-4 py-3 font-medium text-muted">Price</th>
-                <th className="px-4 py-3 font-medium text-muted">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filtered.map((b) => (
-                <tr key={b.id} className="hover:bg-surface/30">
-                  <td className="px-4 py-3 text-foreground">{b.date}</td>
-                  <td className="px-4 py-3 text-foreground">
-                    {b.start_time}–{b.end_time}
-                  </td>
-                  <td className="px-4 py-3 text-foreground">{b.staff_name}</td>
-                  <td className="px-4 py-3 text-foreground">
-                    {b.service_name}
-                  </td>
-                  <td className="px-4 py-3 text-foreground">
-                    {b.customer_name || "—"}
-                  </td>
-                  <td className="px-4 py-3 text-muted">{b.customer_phone}</td>
-                  <td className="px-4 py-3 text-foreground">
-                    {b.currency} {b.price}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_STYLES[b.status] ?? "bg-gray-50 text-gray-700"}`}
-                    >
-                      {b.status.replace("_", " ")}
-                    </span>
-                  </td>
+        <>
+          {/* Desktop: table */}
+          <div className="mt-6 hidden overflow-hidden rounded-xl border border-border bg-white md:block">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b border-border bg-surface/50">
+                <tr>
+                  <th className="px-4 py-3 font-medium text-muted">Date</th>
+                  <th className="px-4 py-3 font-medium text-muted">Time</th>
+                  <th className="px-4 py-3 font-medium text-muted">Staff</th>
+                  <th className="px-4 py-3 font-medium text-muted">Service</th>
+                  <th className="px-4 py-3 font-medium text-muted">Customer</th>
+                  <th className="px-4 py-3 font-medium text-muted">Phone</th>
+                  <th className="px-4 py-3 font-medium text-muted">Price</th>
+                  <th className="px-4 py-3 font-medium text-muted">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {filtered.map((b) => (
+                  <tr key={b.id} className="hover:bg-surface/30">
+                    <td className="px-4 py-3 text-foreground">{b.date}</td>
+                    <td className="px-4 py-3 text-foreground">
+                      {b.start_time}–{b.end_time}
+                    </td>
+                    <td className="px-4 py-3 text-foreground">{b.staff_name}</td>
+                    <td className="px-4 py-3 text-foreground">
+                      {b.service_name}
+                    </td>
+                    <td className="px-4 py-3 text-foreground">
+                      {b.customer_name || "—"}
+                    </td>
+                    <td className="px-4 py-3 text-muted">{b.customer_phone}</td>
+                    <td className="px-4 py-3 text-foreground">
+                      {b.currency} {b.price}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_STYLES[b.status] ?? "bg-gray-50 text-gray-700"}`}
+                      >
+                        {b.status.replace("_", " ")}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {/* Mobile: cards */}
+          <div className="mt-6 space-y-3 md:hidden">
+            {filtered.map((b) => (
+              <div
+                key={b.id}
+                className="rounded-xl border border-border bg-white p-4"
+              >
+                <div className="font-medium text-foreground">
+                  {b.service_name} · {b.staff_name}
+                </div>
+                <div className="mt-0.5 text-sm text-muted">
+                  {b.date} · {b.start_time}–{b.end_time}
+                </div>
+                <div className="mt-0.5 text-sm text-foreground">
+                  {b.customer_name || "—"} · {b.customer_phone}
+                </div>
+                <div className="mt-2 flex items-center justify-between">
+                  <span className="text-sm font-medium text-foreground">
+                    {b.currency} {b.price}
+                  </span>
+                  <span
+                    className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_STYLES[b.status] ?? "bg-gray-50 text-gray-700"}`}
+                  >
+                    {b.status.replace("_", " ")}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

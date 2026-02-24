@@ -109,7 +109,7 @@ export default function ServicesSettingsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-muted">{services.length} service(s)</p>
         <button
           onClick={() => { resetForm(); setShowForm(true); }}
@@ -169,37 +169,63 @@ export default function ServicesSettingsPage() {
           <p className="text-sm text-muted">No services yet. Add your first bookable service.</p>
         </div>
       ) : (
-        <div className="mt-6 overflow-hidden rounded-xl border border-border bg-white">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-border bg-surface/50">
-              <tr>
-                <th className="px-4 py-3 font-medium text-muted">Name</th>
-                <th className="px-4 py-3 font-medium text-muted">Price</th>
-                <th className="px-4 py-3 font-medium text-muted">Duration</th>
-                <th className="px-4 py-3 font-medium text-muted">Status</th>
-                <th className="px-4 py-3 font-medium text-muted"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {services.map((s) => (
-                <tr key={s.id} className="hover:bg-surface/30">
-                  <td className="px-4 py-3 font-medium text-foreground">{s.name}</td>
-                  <td className="px-4 py-3 text-foreground">{s.currency} {s.default_price}</td>
-                  <td className="px-4 py-3 text-foreground">{s.default_duration_minutes} min</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${s.status === "active" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-700"}`}>
-                      {s.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <button onClick={() => startEdit(s)} className="text-xs font-medium text-primary hover:underline">Edit</button>
-                    <button onClick={() => handleDelete(s.id)} className="ml-3 text-xs font-medium text-red-600 hover:underline">Delete</button>
-                  </td>
+        <>
+          {/* Desktop: table */}
+          <div className="mt-6 hidden overflow-hidden rounded-xl border border-border bg-white md:block">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b border-border bg-surface/50">
+                <tr>
+                  <th className="px-4 py-3 font-medium text-muted">Name</th>
+                  <th className="px-4 py-3 font-medium text-muted">Price</th>
+                  <th className="px-4 py-3 font-medium text-muted">Duration</th>
+                  <th className="px-4 py-3 font-medium text-muted">Status</th>
+                  <th className="px-4 py-3 font-medium text-muted"></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {services.map((s) => (
+                  <tr key={s.id} className="hover:bg-surface/30">
+                    <td className="px-4 py-3 font-medium text-foreground">{s.name}</td>
+                    <td className="px-4 py-3 text-foreground">{s.currency} {s.default_price}</td>
+                    <td className="px-4 py-3 text-foreground">{s.default_duration_minutes} min</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${s.status === "active" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-700"}`}>
+                        {s.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <button onClick={() => startEdit(s)} className="text-xs font-medium text-primary hover:underline">Edit</button>
+                      <button onClick={() => handleDelete(s.id)} className="ml-3 text-xs font-medium text-red-600 hover:underline">Delete</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {/* Mobile: cards */}
+          <div className="mt-6 space-y-3 md:hidden">
+            {services.map((s) => (
+              <div
+                key={s.id}
+                className="rounded-xl border border-border bg-white p-4"
+              >
+                <div className="font-medium text-foreground">{s.name}</div>
+                <div className="mt-0.5 text-sm text-muted">
+                  {s.currency} {s.default_price} · {s.default_duration_minutes} min
+                </div>
+                <div className="mt-2 flex items-center justify-between">
+                  <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${s.status === "active" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-700"}`}>
+                    {s.status}
+                  </span>
+                  <div className="flex gap-2">
+                    <button onClick={() => startEdit(s)} className="text-xs font-medium text-primary hover:underline">Edit</button>
+                    <button onClick={() => handleDelete(s.id)} className="text-xs font-medium text-red-600 hover:underline">Delete</button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

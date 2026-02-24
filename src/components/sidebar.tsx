@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { useBranch } from "@/contexts/branch-context";
+import { useSidebar } from "@/contexts/sidebar-context";
 
 const BRANCH_NAV = [
   {
@@ -41,9 +42,14 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const { companyName, branches, selectedBranchId, setSelectedBranchId } = useBranch();
+  const { sidebarOpen, closeSidebar } = useSidebar();
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r border-border bg-white">
+    <aside
+      className={`fixed inset-y-0 left-0 z-50 flex w-64 max-w-[85vw] flex-col border-r border-border bg-white shadow-xl transition-transform duration-200 lg:static lg:max-w-none lg:shadow-none lg:translate-x-0 lg:transition-none ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      }`}
+    >
       {/* Logo + Company */}
       <div className="px-5 pt-5">
         <div className="flex items-center gap-2.5">
@@ -92,6 +98,7 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={closeSidebar}
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
                 active
                   ? "bg-[#eef5fb] text-primary"
@@ -110,6 +117,7 @@ export default function Sidebar() {
         {/* Settings (company-level) */}
         <Link
           href="/dashboard/settings"
+          onClick={closeSidebar}
           className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
             pathname.startsWith("/dashboard/settings")
               ? "bg-[#eef5fb] text-primary"

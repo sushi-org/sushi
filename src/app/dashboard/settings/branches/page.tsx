@@ -135,7 +135,7 @@ export default function BranchesSettingsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-muted">{branches.length} branch(es)</p>
         <button
           onClick={() => { resetForm(); setShowForm(true); }}
@@ -217,37 +217,62 @@ export default function BranchesSettingsPage() {
           <p className="text-sm text-muted">No branches yet. Add your first branch.</p>
         </div>
       ) : (
-        <div className="mt-6 overflow-hidden rounded-xl border border-border bg-white">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-border bg-surface/50">
-              <tr>
-                <th className="px-4 py-3 font-medium text-muted">Name</th>
-                <th className="px-4 py-3 font-medium text-muted">Address</th>
-                <th className="px-4 py-3 font-medium text-muted">Phone</th>
-                <th className="px-4 py-3 font-medium text-muted">Status</th>
-                <th className="px-4 py-3 font-medium text-muted"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {branches.map((b) => (
-                <tr key={b.id} className="hover:bg-surface/30">
-                  <td className="px-4 py-3 font-medium text-foreground">{b.name}</td>
-                  <td className="px-4 py-3 text-foreground">{b.address}</td>
-                  <td className="px-4 py-3 text-foreground">{b.phone ?? "—"}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${b.status === "active" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-700"}`}>
-                      {b.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <button onClick={() => startEdit(b)} className="text-xs font-medium text-primary hover:underline">Edit</button>
-                    <button onClick={() => handleDelete(b.id)} className="ml-3 text-xs font-medium text-red-600 hover:underline">Delete</button>
-                  </td>
+        <>
+          {/* Desktop: table */}
+          <div className="mt-6 hidden overflow-hidden rounded-xl border border-border bg-white md:block">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b border-border bg-surface/50">
+                <tr>
+                  <th className="px-4 py-3 font-medium text-muted">Name</th>
+                  <th className="px-4 py-3 font-medium text-muted">Address</th>
+                  <th className="px-4 py-3 font-medium text-muted">Phone</th>
+                  <th className="px-4 py-3 font-medium text-muted">Status</th>
+                  <th className="px-4 py-3 font-medium text-muted"></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {branches.map((b) => (
+                  <tr key={b.id} className="hover:bg-surface/30">
+                    <td className="px-4 py-3 font-medium text-foreground">{b.name}</td>
+                    <td className="px-4 py-3 text-foreground">{b.address}</td>
+                    <td className="px-4 py-3 text-foreground">{b.phone ?? "—"}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${b.status === "active" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-700"}`}>
+                        {b.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <button onClick={() => startEdit(b)} className="text-xs font-medium text-primary hover:underline">Edit</button>
+                      <button onClick={() => handleDelete(b.id)} className="ml-3 text-xs font-medium text-red-600 hover:underline">Delete</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {/* Mobile: cards */}
+          <div className="mt-6 space-y-3 md:hidden">
+            {branches.map((b) => (
+              <div
+                key={b.id}
+                className="rounded-xl border border-border bg-white p-4"
+              >
+                <div className="font-medium text-foreground">{b.name}</div>
+                <div className="mt-0.5 text-sm text-muted">{b.address}</div>
+                <div className="mt-0.5 text-sm text-muted">{b.phone ?? "—"}</div>
+                <div className="mt-2 flex items-center justify-between">
+                  <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${b.status === "active" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-700"}`}>
+                    {b.status}
+                  </span>
+                  <div className="flex gap-2">
+                    <button onClick={() => startEdit(b)} className="text-xs font-medium text-primary hover:underline">Edit</button>
+                    <button onClick={() => handleDelete(b.id)} className="text-xs font-medium text-red-600 hover:underline">Delete</button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

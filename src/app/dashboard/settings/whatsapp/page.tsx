@@ -113,7 +113,7 @@ export default function WhatsAppSettingsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-muted">
           {activeAccounts.length} connected account(s)
         </p>
@@ -253,60 +253,104 @@ export default function WhatsAppSettingsPage() {
           </p>
         </div>
       ) : (
-        <div className="mt-6 overflow-hidden rounded-xl border border-border bg-white">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-border bg-surface/50">
-              <tr>
-                <th className="px-4 py-3 font-medium text-muted">Branch</th>
-                <th className="px-4 py-3 font-medium text-muted">Phone</th>
-                <th className="px-4 py-3 font-medium text-muted">
-                  Phone Number ID
-                </th>
-                <th className="px-4 py-3 font-medium text-muted">Status</th>
-                <th className="px-4 py-3 font-medium text-muted"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {activeAccounts.map((acct) => {
-                const branch = branches.find((b) => b.id === acct.branch_id);
-                return (
-                  <tr key={acct.id} className="hover:bg-surface/30">
-                    <td className="px-4 py-3 font-medium text-foreground">
-                      {branch?.name ?? "Unknown"}
-                    </td>
-                    <td className="px-4 py-3 text-foreground">
-                      {acct.display_phone}
-                    </td>
-                    <td className="px-4 py-3 font-mono text-xs text-muted">
-                      {acct.phone_number_id}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
-                          acct.status === "active"
-                            ? "bg-green-50 text-green-700"
-                            : acct.status === "pending"
-                              ? "bg-yellow-50 text-yellow-700"
-                              : "bg-gray-50 text-gray-700"
-                        }`}
-                      >
-                        {acct.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <button
-                        onClick={() => handleDisconnect(acct.id)}
-                        className="text-xs font-medium text-red-600 hover:underline"
-                      >
-                        Disconnect
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <>
+          {/* Desktop: table */}
+          <div className="mt-6 hidden overflow-hidden rounded-xl border border-border bg-white md:block">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b border-border bg-surface/50">
+                <tr>
+                  <th className="px-4 py-3 font-medium text-muted">Branch</th>
+                  <th className="px-4 py-3 font-medium text-muted">Phone</th>
+                  <th className="px-4 py-3 font-medium text-muted">
+                    Phone Number ID
+                  </th>
+                  <th className="px-4 py-3 font-medium text-muted">Status</th>
+                  <th className="px-4 py-3 font-medium text-muted"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {activeAccounts.map((acct) => {
+                  const branch = branches.find((b) => b.id === acct.branch_id);
+                  return (
+                    <tr key={acct.id} className="hover:bg-surface/30">
+                      <td className="px-4 py-3 font-medium text-foreground">
+                        {branch?.name ?? "Unknown"}
+                      </td>
+                      <td className="px-4 py-3 text-foreground">
+                        {acct.display_phone}
+                      </td>
+                      <td className="px-4 py-3 font-mono text-xs text-muted">
+                        {acct.phone_number_id}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
+                            acct.status === "active"
+                              ? "bg-green-50 text-green-700"
+                              : acct.status === "pending"
+                                ? "bg-yellow-50 text-yellow-700"
+                                : "bg-gray-50 text-gray-700"
+                          }`}
+                        >
+                          {acct.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          onClick={() => handleDisconnect(acct.id)}
+                          className="text-xs font-medium text-red-600 hover:underline"
+                        >
+                          Disconnect
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          {/* Mobile: cards */}
+          <div className="mt-6 space-y-3 md:hidden">
+            {activeAccounts.map((acct) => {
+              const branch = branches.find((b) => b.id === acct.branch_id);
+              return (
+                <div
+                  key={acct.id}
+                  className="rounded-xl border border-border bg-white p-4"
+                >
+                  <div className="font-medium text-foreground">
+                    {branch?.name ?? "Unknown"}
+                  </div>
+                  <div className="mt-0.5 text-sm text-foreground">
+                    {acct.display_phone}
+                  </div>
+                  <div className="mt-0.5 font-mono text-xs text-muted">
+                    ID: {acct.phone_number_id}
+                  </div>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span
+                      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
+                        acct.status === "active"
+                          ? "bg-green-50 text-green-700"
+                          : acct.status === "pending"
+                            ? "bg-yellow-50 text-yellow-700"
+                            : "bg-gray-50 text-gray-700"
+                      }`}
+                    >
+                      {acct.status}
+                    </span>
+                    <button
+                      onClick={() => handleDisconnect(acct.id)}
+                      className="text-xs font-medium text-red-600 hover:underline"
+                    >
+                      Disconnect
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
       )}
     </div>
   );

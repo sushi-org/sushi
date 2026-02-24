@@ -303,7 +303,7 @@ function InboxContent() {
   return (
     <div className="flex h-full flex-col bg-background">
       {/* Header */}
-      <div className="shrink-0 border-b border-border bg-white px-6 py-5 shadow-sm">
+      <div className="shrink-0 border-b border-border bg-white px-4 py-4 shadow-sm sm:px-6 sm:py-5">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
           Inbox
         </h1>
@@ -312,10 +312,14 @@ function InboxContent() {
         </p>
       </div>
 
-      {/* Main split */}
+      {/* Main split — on mobile: show list OR detail; on lg: show both */}
       <div className="flex min-h-0 flex-1">
-        {/* Left panel — conversation list */}
-        <div className="flex w-80 shrink-0 flex-col border-r border-border bg-white shadow-sm">
+        {/* Left panel — conversation list (hidden on mobile when detail is shown) */}
+        <div
+          className={`flex shrink-0 flex-col border-r border-border bg-white shadow-sm lg:w-80 ${
+            selectedId ? "hidden lg:flex" : "flex w-full lg:w-80"
+          }`}
+        >
           {/* Status filter tabs */}
           <div className="flex flex-wrap gap-2 border-b border-border bg-surface/30 px-4 py-3">
             {filterTabs.map((tab) => (
@@ -436,8 +440,12 @@ function InboxContent() {
           </div>
         </div>
 
-        {/* Right panel — conversation detail */}
-        <div className="flex min-w-0 flex-1 flex-col bg-background">
+        {/* Right panel — conversation detail (hidden on mobile when list is shown) */}
+        <div
+          className={`flex min-w-0 flex-1 flex-col bg-background ${
+            selectedId ? "flex w-full" : "hidden lg:flex"
+          }`}
+        >
           {!selectedId ? (
             <div className="flex flex-1 flex-col items-center justify-center text-center">
               <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-surface/50">
@@ -467,8 +475,19 @@ function InboxContent() {
           ) : detail ? (
             <>
               {/* Detail header */}
-              <div className="flex items-center justify-between border-b border-border bg-white px-6 py-4 shadow-sm">
-                <div className="flex items-center gap-4">
+              <div className="flex items-center justify-between border-b border-border bg-white px-4 py-4 shadow-sm sm:px-6">
+                <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
+                  {/* Back button — mobile only */}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedId(null)}
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-muted hover:bg-surface hover:text-foreground lg:hidden"
+                    aria-label="Back to list"
+                  >
+                    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                  </button>
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-base font-semibold text-primary">
                     {(contactLabel(detail.contact)[0] ?? "?").toUpperCase()}
                   </div>
@@ -484,12 +503,12 @@ function InboxContent() {
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex shrink-0 flex-wrap gap-2">
                   {detail.status === "escalated" && (
                     <button
                       onClick={handleHandBack}
                       disabled={acting}
-                      className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted hover:bg-surface disabled:opacity-50"
+                      className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted hover:bg-surface disabled:opacity-50 sm:px-4 sm:py-2 sm:text-sm"
                     >
                       Hand Back to AI
                     </button>
@@ -498,7 +517,7 @@ function InboxContent() {
                     <button
                       onClick={handleResolve}
                       disabled={acting}
-                      className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 disabled:opacity-50"
+                      className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-emerald-700 disabled:opacity-50 sm:px-4 sm:py-2 sm:text-sm"
                     >
                       Resolve
                     </button>
@@ -507,7 +526,7 @@ function InboxContent() {
               </div>
 
               {/* Messages thread */}
-              <div className="flex-1 overflow-y-auto px-6 py-6">
+              <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-6">
                 <div className="mx-auto max-w-2xl space-y-4">
                   {detail.messages.map((msg) => (
                     <MessageBubble key={msg.id} message={msg} />
@@ -519,7 +538,7 @@ function InboxContent() {
               {/* Improve AI — Add to knowledge base (when conversation needed a human) */}
               {(detail.status === "escalated" ||
                 (detail.status === "resolved" && detail.escalated_at)) && (
-                <div className="shrink-0 border-t border-border bg-surface/30 px-6 py-4">
+                <div className="shrink-0 border-t border-border bg-surface/30 px-4 py-4 sm:px-6">
                   <div className="mx-auto max-w-2xl">
                     {!showAddKB ? (
                       <button
@@ -629,7 +648,7 @@ function InboxContent() {
 
               {/* Reply input */}
               {detail.status !== "resolved" && (
-                <div className="shrink-0 border-t border-border bg-white px-6 py-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                <div className="shrink-0 border-t border-border bg-white px-4 py-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] sm:px-6">
                   <form
                     onSubmit={handleReply}
                     className="mx-auto flex max-w-2xl gap-3"

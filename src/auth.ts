@@ -16,32 +16,49 @@ declare module "next-auth" {
 const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 const AUTH_SYNC_SECRET = process.env.AUTH_SYNC_SECRET!;
 
+const SYNC_TIMEOUT_MS = 8000;
+
 async function syncMember(email: string, name: string, image?: string | null) {
   const url = `${API_URL}/auth/sync`;
-  console.log(`[auth] syncing member to ${url}`);
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${AUTH_SYNC_SECRET}`,
-    },
-    body: JSON.stringify({
-      email,
-      name,
-      avatar_url: image ?? null,
-    }),
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), SYNC_TIMEOUT_MS);
 
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    console.error(`[auth] sync failed: ${res.status} ${body}`);
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${AUTH_SYNC_SECRET}`,
+      },
+      body: JSON.stringify({
+        email,
+        name,
+        avatar_url: image ?? null,
+      }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      console.error(`[auth] sync failed: ${res.status} ${body}`);
+      return null;
+    }
+
+    return res.json();
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (err instanceof Error && err.name === "AbortError") {
+      console.error("[auth] sync timeout - backend unreachable");
+    } else {
+      throw err;
+    }
     return null;
   }
-
-  return res.json();
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,
   providers: [Google],
   callbacks: {
     async signIn({ user, account }) {
