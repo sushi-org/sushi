@@ -59,7 +59,7 @@ export default function Sidebar() {
             <rect x="13.5" y="17" width="5" height="5" rx="0.5" stroke="#1c6b96" strokeWidth="1.4" fill="none" />
           </svg>
           <span className="text-base font-semibold tracking-tight text-foreground">
-            Clink
+            First Response
           </span>
         </div>
         {companyName && (

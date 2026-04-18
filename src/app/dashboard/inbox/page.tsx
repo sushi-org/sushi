@@ -310,7 +310,7 @@ function InboxContent() {
           Inbox
         </h1>
         <p className="mt-0.5 text-sm text-muted">
-          Customer conversations managed by Clink AI
+          Customer conversations managed by First Response AI
         </p>
       </div>
 

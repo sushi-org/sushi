@@ -99,7 +99,7 @@ export default function OnboardingPage() {
     <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top_left,#e8f1f9_0%,#f1f5f9_44%,#f1f5f9_100%)] px-4">
       <div className="w-full max-w-md rounded-2xl border border-border bg-white p-8 shadow-[0_20px_55px_-28px_rgba(28,61,88,0.28)]">
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Welcome to Clink, {memberName}
+          Welcome to First Response, {memberName}
         </h1>
         <p className="mt-2 text-sm text-muted">
           {mode === "create"

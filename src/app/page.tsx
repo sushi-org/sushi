@@ -13,8 +13,8 @@ const CAROUSEL_EXAMPLES = [
       accent: "#22c55e",
       inquiryText: "text-[#22c55e]",
       userBubble: "border-[#475569] bg-[#475569]",
-      clinkBadge: "border-[#22c55e]/50 bg-[#22c55e]/20 text-[#22c55e]",
-      clinkBubble: "border-[#22c55e]/40 bg-[#22c55e]/10",
+      frBadge: "border-[#22c55e]/50 bg-[#22c55e]/20 text-[#22c55e]",
+      frBubble: "border-[#22c55e]/40 bg-[#22c55e]/10",
       activeDot: "bg-[#22c55e]",
     },
     asks: ["Any slot tonight?", "Can I book with Anna?", "Need 2 back-to-back slots."],
@@ -26,8 +26,8 @@ const CAROUSEL_EXAMPLES = [
       accent: "#14b8a6",
       inquiryText: "text-[#14b8a6]",
       userBubble: "border-[#475569] bg-[#475569]",
-      clinkBadge: "border-[#14b8a6]/50 bg-[#14b8a6]/20 text-[#14b8a6]",
-      clinkBubble: "border-[#14b8a6]/40 bg-[#14b8a6]/10",
+      frBadge: "border-[#14b8a6]/50 bg-[#14b8a6]/20 text-[#14b8a6]",
+      frBubble: "border-[#14b8a6]/40 bg-[#14b8a6]/10",
       activeDot: "bg-[#14b8a6]",
     },
     asks: ["How much is facial cleaning?", "Open on Sunday?", "How long is a treatment?"],
@@ -39,8 +39,8 @@ const CAROUSEL_EXAMPLES = [
       accent: "#8b5cf6",
       inquiryText: "text-[#8b5cf6]",
       userBubble: "border-[#475569] bg-[#475569]",
-      clinkBadge: "border-[#8b5cf6]/50 bg-[#8b5cf6]/20 text-[#8b5cf6]",
-      clinkBubble: "border-[#8b5cf6]/40 bg-[#8b5cf6]/10",
+      frBadge: "border-[#8b5cf6]/50 bg-[#8b5cf6]/20 text-[#8b5cf6]",
+      frBubble: "border-[#8b5cf6]/40 bg-[#8b5cf6]/10",
       activeDot: "bg-[#8b5cf6]",
     },
     asks: ["Need to reschedule tomorrow.", "I did not get confirmation.", "Can I cancel now?"],
@@ -87,7 +87,7 @@ export default function Home() {
       title: "24/7 AI that knows your business",
       description: (
         <>
-          Clink automatically learns from your company&apos;s FAQs, services, and policies—so{" "}
+          First Response automatically learns from your company&apos;s FAQs, services, and policies—so{" "}
           <span className="font-semibold text-[#22c55e]">customers get immediate responses and never drop off waiting.</span>
         </>
       ),
@@ -121,7 +121,7 @@ export default function Home() {
     },
     {
       step: "Step 3",
-      title: "Go live with Clink",
+      title: "Go live with first-response",
       text: "Start converting conversations into bookings from day one.",
     },
   ];
@@ -139,14 +139,14 @@ export default function Home() {
           <span className="inline-flex h-14 w-14 items-center justify-center rounded-lg bg-[#1e293b]">
             <Image
               src="/logo2.png"
-              alt="Clink logo"
+              alt="First Response logo"
               width={44}
               height={44}
               className="h-11 w-11 object-contain brightness-0 invert"
               priority
             />
           </span>
-          <span>Clink</span>
+          <span>First Response</span>
         </Link>
         <nav className="hidden items-center gap-7 text-sm font-medium text-[#94a3b8] sm:flex">
           <a className="transition-colors hover:text-white" href="#features">
@@ -196,7 +196,7 @@ export default function Home() {
                 </a>
               </div>
               <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-                {["Outcome Based Pricing", "Handle 10x more conversations", "24/7 instant access", "No coding required"].map((item) => (
+                {["Outcome Based Pricing", "Handle 10x more conversations", "24/7 instant access", "No coding required!"].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm text-[#94a3b8]">
                     <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#22c55e]/20 text-[#22c55e]">
                       <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
@@ -228,13 +228,13 @@ export default function Home() {
                       {ask}
                     </div>
                     <div
-                      className="chat-msg-clink relative mt-2 max-w-[92%] pt-3"
+                      className="chat-msg-fr relative mt-2 max-w-[92%] pt-3"
                       style={{ animationDelay: `${index * 0.7 + 0.35}s` }}
                     >
-                      <span className={`absolute -left-2 top-0 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] font-semibold ${activeExample.theme.clinkBadge}`}>
-                        Clink
+                      <span className={`absolute -left-2 top-0 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] font-semibold ${activeExample.theme.frBadge}`}>
+                        First Response
                       </span>
-                      <div className={`rounded-2xl rounded-bl-md border px-3 py-2 text-sm text-white ${activeExample.theme.clinkBubble}`}>
+                      <div className={`rounded-2xl rounded-bl-md border px-3 py-2 text-sm text-white ${activeExample.theme.frBubble}`}>
                         {activeExample.replies[index]}
                       </div>
                     </div>
@@ -345,7 +345,7 @@ export default function Home() {
                         </div>
                         <div className="relative mt-2 max-w-[92%] pt-3">
                           <span className="absolute -left-2 top-0 inline-flex items-center gap-1 rounded-full border border-[#22c55e]/50 bg-[#334155] px-2 py-0.5 text-[10px] font-semibold text-[#22c55e]">
-                            Clink
+                            First Response
                           </span>
                           <div className="rounded-2xl rounded-bl-md border border-[#334155] bg-[#1e293b] px-3 py-2 text-sm text-white">
                             7:00 PM or 7:45 PM works. Which do you prefer?
@@ -358,7 +358,7 @@ export default function Home() {
                         </div>
                         <div className="relative mt-2 max-w-[92%] pt-3">
                           <span className="absolute -left-2 top-0 inline-flex items-center gap-1 rounded-full border border-[#22c55e]/50 bg-[#334155] px-2 py-0.5 text-[10px] font-semibold text-[#22c55e]">
-                            Clink
+                            First Response
                           </span>
                           <div className="rounded-2xl rounded-bl-md border border-[#22c55e]/30 bg-[#22c55e]/10 px-3 py-2 text-sm font-medium text-[#22c55e]">
                             Done. You&apos;re booked for 7:00 PM today.
@@ -374,7 +374,7 @@ export default function Home() {
                       </div>
                       <div className="relative mt-2 max-w-[92%] pt-3">
                         <span className="absolute -left-2 top-0 inline-flex items-center gap-1 rounded-full border border-[#22c55e]/50 bg-[#334155] px-2 py-0.5 text-[10px] font-semibold text-[#22c55e]">
-                          Clink
+                          First Response
                         </span>
                         <div className="rounded-2xl rounded-bl-md border border-[#334155] bg-[#1e293b] px-3 py-2 text-sm text-white">
                           Facial cleaning starts from $88 per session. I can check availability if you&apos;d like to book.
@@ -425,7 +425,7 @@ export default function Home() {
         className="mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-3 px-6 pb-8 text-sm text-[#94a3b8] sm:flex-row sm:items-center sm:px-8"
         id="contact"
       >
-        <p>© {new Date().getFullYear()} Clink. Built for appointment-based businesses.</p>
+        <p>© {new Date().getFullYear()} First Response. Built for appointment-based businesses.</p>
       </footer>
     </div>
   );

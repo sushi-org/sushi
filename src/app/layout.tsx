@@ -3,9 +3,9 @@ import Providers from "@/components/providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Clink | AI Booking Automation Assistant",
+  title: "First Response | AI Booking Automation Assistant",
   description:
-    "Clink helps appointment-based businesses convert chats into confirmed bookings and repeat customers.",
+    "First Response helps appointment-based businesses convert chats into confirmed bookings and repeat customers.",
   icons: {
     icon: "/logo2.png",
     shortcut: "/logo2.png",
